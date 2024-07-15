@@ -1,0 +1,66 @@
+
+a{
+    text-decoration:none;
+
+}
+
+.app-header-dark {
+    background-color: #346 !important;
+}
+
+#LogoBar {
+    height: 100%;
+    width: 100%;
+}
+#main{
+    transition: margin-left .5s;
+    padding: 20px;
+    margin-top:1rem;
+}
+
+.logo-image {
+    background-color: White;
+    max-height: 100%;
+    max-width: 100%;
+}
+.top-bar-brand{
+    position: relative;
+    height:auto;
+}
+.sidenav {
+    height: 100%;
+    width: 75px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.app-header-dark .btn-account.focus, .app-header-dark .btn-account.show, .app-header-dark .btn-account:active, .app-header-dark .btn-account:focus, .app-header-dark .top-bar-brand {
+    background-color: none;
+}
+.ps {
+    overflow-x: hidden !important;
+}
+
+#nav-bar {
+    z-index: 1000;
+}
+
+#nav-bar-open {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+        .sidenav a {
+            font-size: 18px;
+        }
+}

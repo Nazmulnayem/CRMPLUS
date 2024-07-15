@@ -1,0 +1,122 @@
+﻿@using PTL.Entity
+@using static RealERP.WEB.Areas.ControlPanel.ViewModels.VMCompPermindex
+@model VMModule
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+
+    var i = 1;
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+    int pageSize = ViewBag.PageSize;
+    int zeroBasedPageNo = pageNo - 1;
+    if (zeroBasedPageNo < 0) zeroBasedPageNo = 0;
+    i = (pageSize * zeroBasedPageNo) + 1;
+}
+
+<div class="card">
+    <div class="card-body">
+
+        <div>
+            <div class="row">
+                <div class="col-md-1">
+                    <label class="form-label">Page Size</label>
+                    <select class="form-control form-control-sm chzn-select">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="500">500</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <br />
+                    <label for="chkShowall" style="font-weight: bold;" class="btn btn-sm btn-primary w-100"><input type="checkbox" id="chkShowall" />Show All</label>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Modules</label>
+                    <select class="form-control form-control-sm chzn-select" asp-items="Model.listModules">
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-7">
+                    <table class="table table-striped table-hover table-bordered table-sm">
+                        <thead>
+                            <tr class="bg-primary text-white">
+                                <th width="10%">Sl</th>
+                                <th width="70%">Description</th>
+                                <th width="20%">
+                                    Permission <br />
+                                    <input type="checkbox" id="chkall" onchange="onCheckAllChange()" />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Example Row -->
+                            @foreach (var data in ViewBag.CompFrmList)
+                            {
+                                <tr>
+                                    <td class="text-center">@i.</td>
+                                    <td>@data.FRMNAME</td>
+                                    <td class="text-center">
+                                        <input type="checkbox" class="checkper" checked="@data.CHKPER" />
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                        
+                    </table>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <partial name="_Pager" model="@pager" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="card-footer-content">
+            <div class="row  text-center">
+                <div class="col">
+                    <button class="btn btn-success footer-button">Save</button>
+
+                    <button class="btn btn-info footer-button">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $(".chzn-select").chosen({ search_contains: true });
+        });
+
+        function onCheckAllChange() {
+            const chackboxAll = document.getElementById("chkall");
+            console.log(chackboxAll, chackboxAll.checked)
+            if (chackboxAll.checked) {
+                $('.checkper').prop('checked', true);
+            }
+            else {
+                $('.checkper').prop('checked', false);
+            }
+        }
+
+
+
+
+    </script>
+}
+

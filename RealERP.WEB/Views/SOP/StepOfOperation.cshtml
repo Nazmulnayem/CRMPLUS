@@ -1,0 +1,170 @@
+﻿@using PTL.Entity.ControlPanel.ViewModels
+@model EStepOfOperationVM
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="card card-fluid">
+    <form class="card-body" asp-action="StepOfOperation" asp-controller="SOP" asp-area="">
+
+        <div class="row">
+            <div class="col-md-4">
+                <select class="form-control ClCompAndMod" id="ddlmodule" onchange="OnChange(this)" asp-for="id" asp-items="Model.ModuleList">
+                </select>
+            </div>
+            <div class="col-md-4">
+                <div class="spinner-grow text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <label id="header">Quick Tour<label>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+
+        <div class="row Stepoperation" id="listsearchdiv">
+            <div class="col-md-4">
+                <div class="card first">
+                    <div class="card-header" id="leftmheader">
+                        A. Operational Menu
+                    </div>
+                    <!-- .card-body -->
+                    <div class="card-body">
+                        <ul id="Leftul" class="list-unstyled colLeft">
+                            @foreach (var item in Model.EMenuTable.Where(x => x.itemcod.StartsWith("02")).ToList())
+                            {
+                                if (item.itemslct == false)
+                                {
+                                    <li><h5>@item.itemdesc</h5></li>
+                                }
+                                else
+                                {
+                                    if (item.proutes.Length > 0)
+                                    {
+                                        Dictionary<string, string> keypair = new Dictionary<string, string>();
+                                        string[] types = item.proutes.Split("&");
+                                        foreach (var querystring in types)
+                                        {
+                                            string key = querystring.Split("=")[0].ToString();
+                                            string value = querystring.Split("=")[1].ToString();
+                                            keypair.Add(key, value);
+                                        }
+
+                                        <li><a asp-area="@item.parea" asp-controller="@item.pcontroller" asp-action="@item.paction" asp-all-route-data="@keypair">@item.itemdesc</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a asp-area="@item.parea" asp-controller="@item.pcontroller" asp-action="@item.paction">@item.itemdesc</a></li>
+                                    }
+
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card first">
+                    <div class="card-header" id="midmheader">
+                        B. General Report
+                    </div>
+                    <!-- .card-body -->
+                    <div class="card-body">
+                        <ul id="Midul" class="list-unstyled colMid">
+                            @foreach (var item in Model.EMenuTable.Where(x => x.itemcod.StartsWith("03")).ToList())
+                            {
+                                if (item.itemslct == false)
+                                {
+                                    <li><h5>@item.itemdesc</h5></li>
+                                }
+                                else
+                                {
+                                    if (item.proutes.Length > 0)
+                                    {
+                                        Dictionary<string, string> keypair = new Dictionary<string, string>();
+                                        string[] types = item.proutes.Split("&");
+                                        foreach (var querystring in types)
+                                        {
+                                            string key = querystring.Split("=")[0].ToString();
+                                            string value = querystring.Split("=")[1].ToString();
+                                            keypair.Add(key, value);
+                                        }
+
+                                        <li><a asp-area="" asp-controller="" asp-action="" asp-all-route-data="@keypair">@item.itemdesc</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a asp-area="" asp-controller="" asp-action="">@item.itemdesc</a></li>
+                                    }
+
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card first">
+                    <div class="card-header" id="midmheader">
+                        C. Management Report
+                    </div>
+                    <!-- .card-body -->
+                    <div class="card-body">
+                        <ul id="Rightul" class="list-unstyled colRight">
+                            @foreach (var item in Model.EMenuTable.Where(x => x.itemcod.StartsWith("04")).ToList())
+                            {
+                                if (item.itemslct == false)
+                                {
+                                    <li><h5>@item.itemdesc</h5></li>
+                                }
+                                else
+                                {
+                                    if (item.proutes.Length > 0)
+                                    {
+                                        Dictionary<string, string> keypair = new Dictionary<string, string>();
+                                        string[] types = item.proutes.Split("&");
+                                        foreach (var querystring in types)
+                                        {
+                                            string key = querystring.Split("=")[0].ToString();
+                                            string value = querystring.Split("=")[1].ToString();
+                                            keypair.Add(key, value);
+                                        }
+
+                                        <li><a asp-area="" asp-controller="" asp-action="" asp-all-route-data="@keypair">@item.itemdesc</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a asp-area="" asp-controller="" asp-action="">@item.itemdesc</a></li>
+                                    }
+
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </form>
+</div>
+
+
+@section Scripts {
+    <script asp-append-version="true">
+        $(document).ready(function () {
+            OnModuleChange();
+        })
+        function OnModuleChange() {
+            $("#header").text($("#ddlmodule option:selected").text());
+        }
+
+        function OnChange(val) {
+            var form = $(val).parents('form');
+            OnModuleChange();
+            form.submit();
+        }
+    </script>
+}

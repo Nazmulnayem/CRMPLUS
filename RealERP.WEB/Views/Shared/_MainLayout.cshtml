@@ -1,0 +1,431 @@
+﻿@using Newtonsoft.Json
+@using PTL.Entity.Auth
+@using static PTL.Entity.Auth.EUserLoginInformation
+@using static PTL.Entity.Auth.ECommon
+@using static PTL.Entity.Auth.ELogin
+@{
+    var company = JsonConvert.DeserializeObject<EClassCompany>(User.FindFirst("Company")?.Value ?? JsonConvert.SerializeObject(new EClassCompany()));// COMPANY INFO
+    var sessionLog = JsonConvert.DeserializeObject<List<SessionLog>>(User.FindFirst("SessionLog")?.Value ?? JsonConvert.SerializeObject(new List<SessionLog>())); //SESSION INFO
+    var comModule = SessionHelper.GetObjectFromJson<List<EModule>>(Context.Session, "CompanyModule");// MODULE
+    var userPermPage = SessionHelper.GetObjectFromJson<List<UserPagePerm>>(Context.Session, "UserPermissionPage"); //Permission
+    var stCtPage = SessionHelper.GetObjectFromJson<List<UserMenuList>>(Context.Session, "ShortcutPage"); // Shortcut Url
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PTL</title>
+    <link rel="stylesheet" href="~/Content/Theme/theme.css" />
+    <link rel="stylesheet" href="~/Content/Theme/vendor/fontawesome-free/css/all.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="~/scripts/jquery-2.1.3.min.js"></script>
+    <link href="~/content/sweetalert/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/content/sweetalert/sweetalert2.min.js"></script>
+    <link href="~/content/chosen.css" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- .app -->
+    <div class="app" id="WraperMain" runat="server">
+        <!-- .app-header -->
+        <header class="app-header app-header-dark">
+            <!-- .top-bar -->
+            <div class="top-bar">
+                <!-- .top-bar-brand -->
+                <div class="top-bar-brand logobackground">
+                    <a id="LogoBar" asp-action="Index" asp-controller="Home" asp-area="">
+                        <img id="ComLogo" src="@Url.Content($"/Image/CompanyLogo/{company?.comcod}.jpg")" class="logo-image" />
+                    </a>
+                </div>
+                <!-- /.top-bar-brand -->
+                <!-- .top-bar-list -->
+                <div class="top-bar-list">
+                    <!-- .top-bar-item -->
+                    <div class="top-bar-item px-2 d-md-none d-lg-none d-xl-none">
+                        <!-- toggle menu -->
+                        <button class="hamburger hamburger-squeeze" type="button" data-toggle="aside" aria-label="toggle menu"><span class="hamburger-box"><span class="hamburger-inner"></span></span></button>
+                        <!-- /toggle menu -->
+                    </div>
+
+                    <div class="top-bar-item">
+                        <div id="UpdatePanel2">
+                            <span class="account-summary pr-lg-4 d-none d-lg-flex flex-column">
+                                <span id="LblGrpCompany" class=" account-name text-white lblCompName">@company?.comnam</span>
+                                <div>
+                                    <span class="fa fa-map-marker" aria-hidden="true"></span>&nbsp;
+                                    <span id="lblTitle" class="text-white account-description">@ViewData["Title"]</span>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="top-bar-item top-bar-item-right px-0 d-none d-sm-flex">
+                        <ul class="header-nav nav">
+                            <li class="nav-item dropdown header-nav-dropdown has-notified">
+                                <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bell "></i>
+                                    <span class="label label-success" id="lblallpop" runat="server">0</span>
+                                </a>
+
+                                <!-- .dropdown-menu -->
+                                <div class="dropdown-menu dropdown-menu-rich dropdown-menu-right" style="overflow: hidden">
+                                    <h6 class="dropdown-header stop-propagation">
+                                        <span>Notification</span>
+                                    </h6>
+                                    <!-- .dropdown-scroll -->
+                                    <div class="dropdown-scroll has-scrollable" id="repNotificmsg">
+                                    </div>
+                                    <a href="#" class="dropdown-footer">
+                                        All Notification
+                                        <i class="fa fa-fw fa-long-arrow-alt-right"></i>
+                                    </a>
+                                </div>
+                                <!-- /.dropdown-menu -->
+                            </li>
+                        </ul>
+
+                        <select name="DDPrintOpt" id="DDPrintOpt" class="custom-select" style="width:80px;">
+                            <option selected="selected" value="PDF">PDF</option>
+                            <option value="HTML">HTML</option>
+                            <option value="WORD">Word</option>
+                            <option value="EXCEL">Excel</option>
+                        </select>
+                        <a id="lnkPrint" class="btn btn-success text-white" href="#"><span class="fa fa-print"></span></a>
+
+                        <!-- .btn-account -->
+                        <div class="dropdown d-flex">
+                            <button class="btn-account d-none d-md-flex" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="user-avatar user-avatar-md">
+
+                                    <img id="userimg" src="@Url.Content($"{@sessionLog?[0].userimg}")" asp-append-version="true" />
+                                </span>
+                                <span class="account-summary pr-lg-4 d-none d-lg-block"><span id="UserName3" class="account-name">ptl </span> <span id="Designation" class="account-description">@sessionLog?[0].usrrmrk</span></span>
+                            </button>
+                            <!-- .dropdown-menu -->
+
+                            <div class="dropdown-menu">
+                                <div class="dropdown-arrow ml-3"></div>
+                                <h6 id="UserName1" class="dropdown-header d-none d-md-block d-lg-none">@sessionLog?[0].username</h6>
+                                <a class="dropdown-item" href='/ERLERP/UserProfile'>
+                                    <span class="dropdown-icon oi oi-person"></span>Profile
+                                </a>
+
+                                <div class="dropdown-divider"></div>
+                                <a id="HyperSrvinf" class="dropdown-item" href="../F_81_Hrm/F_82_App/RptMyInterface?Type=Report&amp;empid=">Service Information</a>
+
+                                <a id="hypCompagPerm" class="dropdown-item" href="../F_34_Mgt/UserCompPagePrivilegesPtl">Company wise Permission</a>
+                                <a id="hypPagPerm" class="dropdown-item" href="../F_34_Mgt/UserLoginfrmNew">User Wise Permission </a>
+
+
+                                <a class="dropdown-item" target="_blank" href='/ERLERP/F_81_Hrm/F_92_Mgt/EmpStatus02?Type=Pabx&comcod='>PABX List</a>
+
+
+                                <a id="hypOnlineAttendance" class="dropdown-item" href="../F_81_Hrm/F_83_Att/AttnOutOfOffice" target="_blank">Online Attendance</a>
+
+                                <a id="HypLinkApplyLvCommon" class="dropdown-item" href="../F_81_Hrm/F_84_Lea/MyLeave?Type=MGT" target="_blank">Apply Leave (MGT)</a>
+                                <a id="HypLinkApplyReqCommon" class="dropdown-item" href="../F_81_Hrm/F_82_App/RptMyAttendenceSheet?Type=MGT&amp;empid=&amp;frmdate=&amp;todate=" target="_blank">Request Apply (MGT)</a>
+
+
+                                <a id="hypappLv" class="dropdown-item" href="../F_81_Hrm/F_84_Lea/MyLeave?Type=User" target="_blank">Apply Leave</a>
+                                <a class="dropdown-item" href='/ERLERP/F_81_Hrm/F_92_Mgt/InterfaceLeavApp?Type=Ind' target="_blank">Leave Interface</a>
+
+
+                                <a id="HypLinkReqInterFace" class="dropdown-item" href="../F_81_Hrm/F_92_Mgt/InterfaceAttApp?Type=Ind" target="_blank">Request Interface</a>
+
+                                <a class="dropdown-item" asp-action="Logout" asp-controller="Home" asp-area=""><span class="dropdown-icon oi oi-account-logout"></span>Logout</a>
+
+
+
+                                <div id="ProfilMenu"></div>
+                            </div>
+                            <!-- /.dropdown-menu -->
+                        </div>
+                        <!-- /.btn-account -->
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- /.app-header -->
+        <!-- .app-aside -->
+        <aside id="mySidenav" class="app-aside app-aside-expand-md app-aside-light sidenav" onclick="clickinside();">
+            <!-- .aside-content -->
+            <div class="aside-content">
+                <!-- .aside-header -->
+                <header class="aside-header d-block d-md-none">
+                    <!-- .btn-account -->
+                    <button class="btn-account" type="button" data-toggle="collapse" data-target="#dropdown-aside">
+                        <span class="user-avatar user-avatar-lg">
+                            <img src="/Image/Avatars/profile.jpg" alt="">
+                        </span> <span class="account-icon"><span class="fa fa-caret-down fa-lg"></span></span><span class="account-summary"><span id="UserName2" class="account-name">ptl </span><span class="account-description">Marketing Manager</span></span>
+                    </button>
+                    <!-- /.btn-account -->
+                    <!-- .dropdown-aside -->
+                    <div id="dropdown-aside" class="dropdown-aside collapse">
+                        <!-- dropdown-items -->
+                        <div class="pb-3">
+                            <a class="dropdown-item" href="#"><span class="dropdown-icon oi oi-person"></span>Profile</a>
+                            <a class="dropdown-item" href='/ERLERP/Login'><span class="dropdown-icon oi oi-person"></span>Give Attandance</a>
+                            <a class="dropdown-item" href='/ERLERP/F_81_Hrm/F_83_Att/AttnOutOfOffice'><span class="dropdown-icon oi oi-account-logout"></span>Logout</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Ask Forum</a>
+                            <a class="dropdown-item" href="#">Keyboard Shortcuts</a>
+                        </div>
+                        <!-- /dropdown-items -->
+                    </div>
+                    <!-- /.dropdown-aside -->
+                </header>
+                <!-- /.aside-header -->
+                <!-- .aside-menu -->
+                <div class="aside-menu has-scrollable" id="aside-menu">
+                    <!-- .stacked-menu -->
+                    <nav id="stacked-menu" class="stacked-menu">
+                        <div id="nav-bar">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="nav-bar-open" title="Expand/Collapse"><span class="fa fa-bars"></span></a>
+                        </div>
+
+                        <div class="col-md-12 d-none">
+                            <div class="input-group input-group-search dropdown ui-widget">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" title="Search"><span class="fa fa-search"></span></span>
+                                </div>
+                                <input id="the-basics" type="text" class="form-control ui-autocomplete-input" placeholder="Search">
+                            </div>
+                        </div>
+
+                        <!-- .menu -->
+                        <ul id="oldMenu" class="menu">
+                            <!-- .menu-item -->
+                            <li class="menu-item has-active">
+                                <a href="/ERLERP/StepofOperationNew?moduleid=" id="sop" target="_self" class="menu-link"><span class="menu-icon fas fa-home" title="Home"></span><span class="menu-text">Home</span></a>
+                            </li>
+
+                            <!-- /.menu-item -->
+                            <!-- .menu-item -->
+                            <li class="menu-item has-child Module" onclick="SetItemStorage('Module')">
+                                <a href="javascript:void(0);" class="menu-link"><span class="menu-icon far fa-file" title="Modules"></span><span class="menu-text">Modules</span> </a>
+                                <!-- child menu <span class="badge badge-warning">New</span>-->
+                                <ul id="Module" class="menu">
+                                    @foreach (var data in comModule)
+                                    {
+                                        <li class='menu-item'>
+                                            <a asp-action="StepOfOperation" asp-controller="SOP" asp-route-id="@data.moduleid" class='menu-link'>@data.modulename</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                            <!-- /.menu-item -->
+                            <!-- .menu-item -->
+                            <li class="menu-item has-child Interface" onclick="SetItemStorage('Interface')">
+                                <a href="javascript:void(0);" class="menu-link"><span class="menu-icon fa fa-list" title="Interfaces"></span><span class="menu-text">Interfaces</span></a>
+                                <!-- child menu -->
+                                <ul id="Interface" class="menu">
+                                    @foreach (var data in userPermPage.Where(x => x.@interface == "I"))
+                                    {
+                                        <li class='menu-item'>
+                                            <a href="@Url.Content($"/{data.floc}/{data.urlinf}")" class='menu-link' target='_blank'>@data.dscrption</a>
+                                        </li>
+                                    }
+                                </ul>
+                                <!-- /child menu -->
+                            </li>
+                        </ul>
+
+
+                        <ul id="lstFeturedMenu" class="menu mt-0">
+                            @{
+                                var itemExists = userPermPage.Where(x => x.@interface == "Z" && x.frmid.StartsWith("326102")).ToList();
+                                if (itemExists.Count > 0)
+                                {
+                                    <li id="archIve" class="menu-item has-child">
+                                        <a href="#" class="menu-link"><span class="menu-icon fas fa-table" title="Archive"></span><span class="menu-text">Archive</span></a>
+                                        <!-- child menu -->
+                                        <ul id="Ul1" class="menu">
+                                            <li class="menu-item">
+                                                <a href="/ERLERP/MyDashboard?Type=5000" id="menuMaster" target="_blank" class="menu-link"><span class="menu-icon fa fa-th"></span><span class="menu-text">Master Page</span></a>
+                                            </li>
+
+                                            <li class="menu-item">
+                                                <a href="/ERLERP/DeafultMenu?Type=8010" id="GeneralFlow" target="_blank" class="menu-link"><span class="menu-icon fa fa-chart-area"></span><span class="menu-text">General Flow</span></a>
+                                            </li>
+
+                                            <li class="menu-item">
+                                                <a href="/ERLERP/DashboardHRM" id="dashHRM" target="_blank" class="menu-link"><span class="menu-icon fa fa-chart-bar"></span><span class="menu-text">HRM Flow</span></a>
+                                            </li>
+                                        </ul>
+                                        <!-- /child menu -->
+                                    </li>
+                                }
+                            }
+
+                            <li class="menu-item has-child Shorcut" onclick="SetItemStorage('Shorcut')">
+                                <a href="#" class="menu-link"><span class="menu-icon fa fa-link" title="Shortcut"></span><span class="menu-text">My Favorite</span></a>
+                                @{
+                                    var rows = new List<UserPagePerm>();
+                                    foreach (var data in stCtPage)
+                                    {
+                                        var matchedRows = userPermPage.Where(x => x.frmid == data.formid);
+                                        rows.AddRange(matchedRows);
+                                    }
+                                    <!-- child menu -->
+                                    <ul id="ShorCut" class="menu">
+                                        @foreach (var data in rows)
+                                        {
+                                            <li class='menu-item'>
+                                                <a href="@Url.Content($"/{data.floc}/{data.urlinf}")" class='menu-link' target='_blank'>@data.dscrption</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                    <!-- /child menu -->
+                                }
+                            </li>
+                            <!-- /.menu-item -->
+                            <!-- .menu-header -->
+                            <li class="menu-header">Analysis </li>
+
+                            <!-- .menu-item -->
+                            @{
+                                var allInOne = userPermPage.FirstOrDefault(x => x.@interface == "Z" && x.frmid == "3261001");
+                                if (allInOne != null)
+                                {
+                                    <li class="menu-item has-active">
+                                        <a href="@Url.Content($"/{allInOne.urlinf}{company?.comcod}")" target="_blank" class="menu-link">
+                                            <span class="menu-icon fa fa-th" title="All In One"></span>
+                                            <span class="menu-text">All In One</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                var prjDash = userPermPage.FirstOrDefault(x => x.@interface == "Z" && x.frmid == "3261002");
+                                if (prjDash != null)
+                                {
+                                    <li class="menu-item has-active">
+                                        <a href="@Url.Content($"/{prjDash.floc}/{prjDash.urlinf}{company?.comcod}")" id="prjdash" target="_blank" class="menu-link">
+                                            <span class="menu-icon fa fa-th" title="Project DashBoard"></span>
+                                            <span class="menu-text">Project DashBoard</span>
+                                        </a>
+                                    </li>
+                                }
+                            }
+
+                            <li id="AnalysisArea" class="menu-item has-child">
+                                <a href="#" class="menu-link"><span class="menu-icon fas fa-table" title="Analysis Graph"></span><span class="menu-text">Analysis Graph</span></a>
+                                <!-- child menu -->
+                                <ul id="dbGraph" class="menu">
+                                    @foreach (var data in userPermPage.Where(x => x.@interface == "Y"))
+                                    {
+                                        <li class='menu-item'>
+                                            <a href="@Url.Content($"/{data.floc}/{data.urlinf}")" class='menu-link' target='_self'>@data.dscrption</a>
+                                        </li>
+                                    }
+                                </ul>
+                                <!-- /child menu -->
+                            </li>
+
+                            @{
+                                var allGraph = userPermPage.FirstOrDefault(x => x.@interface == "Z" && x.frmid == "3261003");
+                                if (allGraph != null)
+                                {
+                                    <li class="menu-item has-active">
+                                        <a href="@Url.Content($"/{allGraph.urlinf}")" id="allGraph" target="_blank" class="menu-link">
+                                            <span class="menu-icon fa fa-meteor" title="DashBoard"></span>
+                                            <span class="menu-text">Dashboard</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                <li class="menu-item">
+                                    <a href="Tickets/Index.aspx" target="_blank" class="menu-link"><span class="menu-icon fa fa-meteor" title="Ticket"></span><span class="menu-text">Tickets</span></a>
+                                </li>
+                            }
+                        </ul>
+
+                        <ul id="MenuDynamic" class="menu">
+                        </ul>
+                        <!-- /.menu -->
+                    </nav>
+                    <!-- /.stacked-menu -->
+                </div>
+                <!-- /.aside-menu -->
+                <!-- Skin changer -->
+                <footer class="aside-footer border-top p-3">
+                </footer>
+                <!-- /Skin changer -->
+            </div>
+            <!-- /.aside-content -->
+        </aside>
+        <!-- /.app-aside -->
+        <!-- .app-main -->
+        <main id="main" class="app-main">
+            <!-- .wrapper -->
+            <div class="wrapper">
+                <div class="page">
+                    <!-- .page -->
+                    <div class="page-inner">
+
+                        @RenderBody()
+
+                    </div>
+                </div>
+                <!-- .app-footer -->
+                <footer class="app-footer fixed-bottom p-1" style="background-color: #EEEEEE;">
+                    <div id="lblCopy" class="copyright"><div class='copyright'>Developed by : <a href='http://pintechltd.com/' target='_blank'>Pinovation Tech Ltd. </a> </div></div>
+                </footer>
+                <!-- /.app-footer -->
+                <!-- /.wrapper -->
+            </div>
+        </main>
+    </div>
+
+    <script src="~/Content/Theme/vendor/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/jquery/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/bootstrap/js/popper.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/stacked-menu/stacked-menu.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/perfect-scrollbar/perfect-scrollbar.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/flatpickr/flatpickr.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/easy-pie-chart/jquery.easypiechart.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/chart.js/Chart.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/theme.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/toastr/toastr.min.js" type="text/javascript"></script>
+    <script src="~/Content/Theme/vendor/toastr/toastr-demo.js" type="text/javascript"></script>
+    <script src="~/scripts/chosen.jquery.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script asp-append-version="true">
+        $(document).ready(function () {
+            var functionIsRunning = 0;
+            closeNav();
+            $('#nav-bar-open').on('click', function () {
+                if (functionIsRunning == 1) {
+                    functionIsRunning = 0;
+                    closeNav();
+
+                } else {
+                    functionIsRunning = 1;
+                    $(this).attr('data-click-state', 1)
+                    openNav();
+                }
+
+            });
+
+            var menuicon = document.querySelectorAll(".menu-link");
+
+            menuicon.forEach(function (item, index) {
+                item.addEventListener("click", function () {
+                    openNav();
+                    functionIsRunning = 1;
+                })
+            })
+        });
+    </script>
+    @if (ViewBag.JavascriptFunction != null)
+    {
+        <script type="text/javascript">
+            @Html.Raw(ViewBag.JavascriptFunction)
+        </script>
+
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,130 @@
+﻿@using PTL.Entity.Auth.VM_Auth
+@model VMLogin
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<body>
+    <form id="form1" method="post" asp-action="Login" asp-controller="Home">
+        <section class="appsContinerLogin">
+            <div class="mainpage">
+                <div class="asitulogin">
+                    <div id="asitulogmain">
+                        <div class="asitulogInner">
+                            <div class="col-md-12 text-center">
+                                <img id="companyLogo" src="/Image/logo1.jpg" class="Companylogox">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <div id="loginform" class="form-horizontal">
+                                    <div asp-validation-summary="All" class="text-danger text-center"></div>
+                                    <div style="margin-bottom: 1px" class="input-group">
+                                        <span class="input-group-addon"><i class="bi bi-building-fill-up"></i></span>
+                                        <select id="listComName" class="form-control chzn-select"
+                                                asp-items="Model.listCompanies" asp-for="SelectedComcod" onchange="ChangeCompanyLogo()">
+                                        </select>
+                                        <span asp-validation-for="SelectedComcod" class="text-danger"></span>
+                                    </div>
+
+                                    <div style="margin-bottom: 1px" class="input-group">
+                                        <span class="input-group-addon"><i class="bi bi-person-fill"></i></span>
+                                        <input id="userName" class="form-control" asp-for="UserName" title="Please enter you username" placeholder="User Name" />
+
+                                    </div>
+
+                                    <div style="margin-bottom: 1px" class="input-group" id="pwdDiv">
+                                        <span id="lblPass" class="input-group-addon"><i class="bi bi-lock-fill"></i></span>
+                                        <input id="txtuserpass" type="password" class="form-control" asp-for="Password" placeholder="Password" />
+                                        <i id="lbleyePass" class="bi bi-eye toggle-password" toggle="#txtuserpass"></i>
+
+                                    </div>
+
+                                    <div class="asituloginnerIn">
+                                        <span class="remember">
+                                            <input type="checkbox" ID="ChkChangePass" />
+                                            Change Password
+                                        </span>
+
+                                        <button type="submit" id="loginBtn" Class="btn btn-primary pull-right">Sign in</button>
+                                    </div>
+
+                                    <div class="asituloginnerIn">
+                                        <div style="margin-bottom: 1px" class="input-group">
+                                            <span id="lbloldPass" style="display: none;" class="input-group-addon"><i class="bi bi-lock-fill"></i></span>
+                                            <input id="txtuserOldrpass" type="password" class="form-control" asp-for="OldPassword" placeholder="Old Password" style="display: none;" />
+                                        </div>
+                                    </div>
+
+                                    <div class="asituloginnerIn">
+                                        <div style="margin-bottom: 1px" class="input-group">
+                                            <span class="input-group-addon" id="lblNewPass" style="display: none;"><i class="bi bi-lock-fill"></i></span>
+                                            <input id="txtuserNewrpass" type="password" class="form-control" asp-for="NewPassword" placeholder="Type New Password, Use Min 6 Digit" style="display: none;" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 text-center">
+                            <img src="~/Image/erplogo.png" alt="img" width="100" />
+                            <p>We ensure your counting digitally </p>
+                        </div>
+                        <label id="lblmsg" class="alert alert-danger col-sm-12" style="display: none;"> Wrong username or password </label>
+                    </div>
+
+                    <div ID="pnlmsgbox" CssClass="text-center" style="display: none;">
+                        <div id="asitulogmain2">
+                            <p id="lblalrtmsg"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+</body>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            ChangeCompanyLogo();
+
+            $(".toggle-password").click(function () {
+                var input = $($(this).attr("toggle"));
+                if (input.attr("type") == "password") {
+                    $(this).removeClass("bi bi-eye");
+                    $(this).addClass("bi bi-eye-slash");
+                    input.attr("type", "text");
+                }
+                else {
+                    $(this).removeClass("bi bi-eye-slash");
+                    $(this).addClass("bi bi-eye");
+                    input.attr("type", "password");
+                }
+            });
+
+            $('#ChkChangePass').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#lbloldPass, #txtuserOldrpass, #lblNewPass, #txtuserNewrpass').show();
+                    $('#lblPass, #txtuserpass, #lbleyePass').hide();
+                    $("#userName").val('');
+                    $("#txtuserpass").val('');
+                    $("#loginBtn").html('Update');
+                } else {
+                    $('#lblPass, #txtuserpass, #lbleyePass').show();
+                    $('#lbloldPass, #txtuserOldrpass, #lblNewPass, #txtuserNewrpass').hide();
+                    $("#loginBtn").html('Sign in');
+                }
+            });
+
+            $('.chzn-select').chosen({ search_contains: true });
+        });
+
+        function ChangeCompanyLogo() {
+            var compLogo = $('#listComName').val();
+            $('#companyLogo').attr('src', '/Image/CompanyLogo/' + compLogo + '.jpg');
+        }
+    </script>
+}
+

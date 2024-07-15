@@ -1,0 +1,143 @@
+﻿@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="EventNotice" class="col-12 py-0 pl-0 " style="border: 1px solid #D6D8E1;">
+    <div class="row">
+        <!--Breaking box-->
+        <div class="col-md-2 col-lg-2 pr-md-0">
+            <div class="p-2 bg-primary text-white text-center breaking-caret"><span class="font-weight-bold">Notice/Events</span></div>
+        </div>
+        <!--end breaking box-->
+        <!--Breaking content-->
+        <div class="col-md-10 col-lg-10 pl-md-4 py-2">
+            <div class="breaking-box">
+                <div id="carouselbreaking" class="carousel slide" data-ride="carousel">
+                    <!--breaking news-->
+                    <div id="EventCaro" class="carousel-inner">
+                        <div class='carousel-item active'>
+                            <div class='row'>
+                                <div class='col-md-1'>
+                                    <a href='#' class='font-size-sm'>
+                                        <span class='position-relative mx-2 badge badge-primary rounded-0 '>Event Type</span>
+                                    </a>
+                                </div>
+                                <div class='col-md-10 px-4'>
+                                    <a class='label font-size-sm' href='#'>
+                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='carousel-item'>
+                            <div class='row'>
+                                <div class='col-md-1'>
+                                    <a href='#' class='font-size-sm'>
+                                        <span class='position-relative mx-2 badge badge-primary rounded-0 '>Event Type</span>
+                                    </a>
+                                </div>
+                                <div class='col-md-10 px-4'>
+                                    <a class='label font-size-sm' href='#'>
+                                        Lorem Ipsum is simply dummy text of the printing
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end breaking news-->
+                    <!--navigation slider-->
+                    <div class="navigation-box p-2 d-none d-sm-block">
+                        <!--nav left-->
+                        <a class="carousel-control-prev text-primary" href="#carouselbreaking" role="button" data-slide="prev">
+                            <i class="fa fa-angle-left" aria-hidden="true"></i>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <!--nav right-->
+                        <a class="carousel-control-next text-primary" href="#carouselbreaking" role="button" data-slide="next">
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                    <!--end navigation slider-->
+                </div>
+            </div>
+        </div>
+        <!--end breaking content-->
+    </div>
+</div>
+<div class="page-section">
+    <div class="section-block mt-0 mb-0">
+        <div class="metric-row mt-0 mb-0">
+            <div class="col-12">
+                <section class="card pt-0 pb-0 mb-1 card-fluid">
+                    <div class="userGraph">
+                        <header class="card-header pt-0 pb-0">
+                            <div class="d-flex align-items-center">
+                                <div class="mr-auto">
+                                    <ul class="nav userGraphNav">
+                                        <li class="nav-item">
+                                            <a class="nav-link show active" data-toggle="tab">Sales</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab">Procurement</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab">Accounts</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab">Construction</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab">Sub-Contractor</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab">HR</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab">CRM</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div id="filterData" class="dropdown">
+                                    <div class="form-group mb-0">
+                                        <strong>
+                                            <span id="tyearValue" class="custom-control-label mr-2">Jan, 2024-Dec,2024</span>
+                                        </strong>
+                                        <select id="ddlyearSale" class="custom-select chzn-select" style="width:100px;">
+                                            <option value="2019">2019</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2024">2024</option>
+                                        </select>
+                                        <select id="ddlmonths" class="custom-select chzn-select" style="width:100px;">
+                                            <option value="Jan">Jan</option>
+                                            <option value="Feb">Feb</option>
+                                            <option value="Mar">Mar</option>
+                                            <option value="Apr">Apr</option>
+                                            <option value="May">May</option>
+                                            <option value="Jun">Jun</option>
+                                            <option value="Jul">Jul</option>
+                                            <option value="Aug">Aug</option>
+                                            <option value="Sep">Sep</option>
+                                            <option value="Oct">Oct</option>
+                                            <option value="Nov">Nov</option>
+                                            <option value="Dec">Dec</option>
+                                        </select>
+                                        <select id="ddlGraphtype" class="custom-select chzn-select" style="width:100px;">
+                                            <option value="line">Line</option>
+                                            <option value="column">Column</option>
+                                            <option value="area">Area</option>                                            
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
